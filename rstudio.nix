@@ -18,5 +18,10 @@ in
 with import nixpkgsSrc { overlays = [ myOverlay ]; };
 
 rstudioWrapper.override {
-  packages = with rPackages; [ dplyr ggplot2 reshape2 ];
+  packages = with rPackages; [
+    car
+    dplyr
+    ggplot2
+    reshape2
+  ];
 }
