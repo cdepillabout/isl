@@ -22,6 +22,7 @@ rstudioWrapper.override {
     car
     dplyr
     ggplot2
+    glmnet
     reshape2
   ];
 }
