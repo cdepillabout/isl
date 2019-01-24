@@ -38,7 +38,7 @@ let
     '';
 in
 
-buildEnv {
+(buildEnv {
   name = "rstudio-buildEnv";
   paths = [ wrapped-rstudio ];
-}
+}).overrideAttrs (old: { buildInputs = old.buildInputs ++ [ wrapped-rstudio ]; })
