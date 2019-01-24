@@ -17,12 +17,28 @@ in
 
 with import nixpkgsSrc { overlays = [ myOverlay ]; };
 
-rstudioWrapper.override {
-  packages = with rPackages; [
-    car
-    dplyr
-    ggplot2
-    glmnet
-    reshape2
-  ];
+let
+  rstudio =
+    rstudioWrapper.override {
+      packages = with rPackages; [
+        car
+        dplyr
+        ggplot2
+        glmnet
+        reshape2
+      ];
+    };
+
+  wrapped-rstudio =
+    runCommand "wrapped-rstudio" { buildInputs = [makeWrapper]; } ''
+      mkdir -p $out/bin
+      cp ${rstudio}/bin/rstudio $out/bin
+      wrapProgram $out/bin/rstudio \
+        --set QT_PLUGIN_PATH ${qt5.qtbase.bin + "/" + qt5.qtbase.qtPluginPrefix}
+    '';
+in
+
+buildEnv {
+  name = "rstudio-buildEnv";
+  paths = [ wrapped-rstudio ];
 }
