@@ -21,20 +21,33 @@ let
   rstudio =
     rstudioWrapper.override {
       packages = with rPackages; [
+        base64enc
+        bitops
         car
+        caTools
         dplyr
+        evaluate
         ggplot2
         glmnet
+        highr
+        htmltools
+        jsonlite
+        knitr
+        markdown
         reshape2
+        rmarkdown
+        rprojroot
+        yaml
       ];
     };
 
   wrapped-rstudio =
-    runCommand "wrapped-rstudio" { buildInputs = [makeWrapper]; } ''
+    runCommand "wrapped-rstudio" { buildInputs = [pandoc makeWrapper]; } ''
       mkdir -p $out/bin
       cp ${rstudio}/bin/rstudio $out/bin
       wrapProgram $out/bin/rstudio \
-        --set QT_PLUGIN_PATH ${qt5.qtbase.bin + "/" + qt5.qtbase.qtPluginPrefix}
+        --set QT_PLUGIN_PATH "${qt5.qtbase.bin + "/" + qt5.qtbase.qtPluginPrefix}" \
+        --prefix PATH : "${pandoc}/bin"
     '';
 in
 
