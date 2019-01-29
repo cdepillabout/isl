@@ -1,0 +1,114 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+```{r}
+library(ISLR)
+library(MASS)
+library(class)
+
+#attach(Auto)
+
+median_mpg = median(Auto$mpg)
+auto_length = length(Auto$mpg)
+
+mpg01 = rep(0, auto_length)
+mpg01[Auto$mpg > median_mpg] = 1
+#mpg01
+#plot(mpg01)
+myAuto <- data.frame(mpg01, Auto[,-1])
+#summary(myAuto)
+#plot(myAuto)
+
+mpg_formula <- mpg01 ~ weight + year
+#mpg_formula <- mpg01 ~ cylinders + displacement + horsepower + weight + acceleration + year + origin
+```
+
+
+```{r}
+plot(myAuto$weight, myAuto$year, col = ifelse(mpg01, "red", "blue"))
+```
+
+```{r}
+set.seed(1)
+total_size <- auto_length
+train_size <- total_size * 0.8
+test_size <- total_size - train_size
+random_elems <- sample(1:total_size)
+#test <- row(myAuto)[,1]
+train <- random_elems < train_size
+test <- !train
+
+myAuto_train <- myAuto[train,]
+myAuto_test <- myAuto[test,]
+```
+
+```{r}
+lda.fit.train <- lda(mpg_formula, data=myAuto, subset=train)
+lda.pred.test <- predict(lda.fit.train, newdata=myAuto_test)
+lda_correct_percent_test <- mean(lda.pred.test$class == myAuto_test$mpg01)
+lda_correct_percent_test
+```
+
+```{r}
+qda.fit.train <- qda(mpg_formula, data=myAuto, subset=train)
+qda.pred.test <- predict(qda.fit.train, newdata=myAuto_test)
+qda_correct_percent_test <- mean(qda.pred.test$class == myAuto_test$mpg01)
+qda_correct_percent_test
+```
+
+```{r}
+glm.fits.train <- glm(mpg_formula, data=myAuto, subset=train, family=binomial)
+glm.probs.test <- predict(glm.fits.train, newdata=myAuto_test, type="response")
+glm.pred.test <- rep(0, test_size)
+glm.pred.test[glm.probs.test > .5] <- 1
+
+glm_correct_percent_test <- mean(glm.pred.test == myAuto_test$mpg01)
+glm_correct_percent_test
+```
+
+
+```{r}
+knn.pred_1 = knn(data.frame(myAuto$weight[train], myAuto$year[train]),
+                 data.frame(myAuto$weight[test], myAuto$year[test]),
+                 myAuto$mpg01[train], k=1)
+knn_1_correct_percent <- mean(knn.pred_1 == myAuto$mpg01[test])
+knn_1_correct_percent
+```
+
+```{r}
+knn.pred_3 = knn(data.frame(myAuto$weight[train], myAuto$year[train]),
+                 data.frame(myAuto$weight[test], myAuto$year[test]),
+                 myAuto$mpg01[train], k=3)
+knn_3_correct_percent <- mean(knn.pred_3 == myAuto$mpg01[test])
+knn_3_correct_percent
+```
+
+```{r}
+knn.pred_5 = knn(data.frame(myAuto$weight[train], myAuto$year[train]),
+                 data.frame(myAuto$weight[test], myAuto$year[test]),
+                 myAuto$mpg01[train], k=5)
+knn_5_correct_percent <- mean(knn.pred_5 == myAuto$mpg01[test])
+knn_5_correct_percent
+```
+
+
+```{r}
+knn.pred_10 = knn(data.frame(myAuto$weight[train], myAuto$year[train]),
+                 data.frame(myAuto$weight[test], myAuto$year[test]),
+                 myAuto$mpg01[train], k=10)
+knn_10_correct_percent <- mean(knn.pred_10 == myAuto$mpg01[test])
+knn_10_correct_percent
+```
+
+```{r}
+knn.pred_15 = knn(data.frame(myAuto$weight[train], myAuto$year[train]),
+                 data.frame(myAuto$weight[test], myAuto$year[test]),
+                 myAuto$mpg01[train], k=15)
+knn_15_correct_percent <- mean(knn.pred_15 == myAuto$mpg01[test])
+knn_15_correct_percent
+```
