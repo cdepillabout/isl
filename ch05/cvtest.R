@@ -8,9 +8,12 @@
 library(boot)
 
 set.seed(1)
-rows <- 50
-columns <- 5000
-targetPs <- 100
+#rows <- 50
+#columns <- 5000
+#targetPs <- 100
+rows <- 15
+columns <- 200
+targetPs <- 10
 as <- rnorm(rows * columns)
 xs <- matrix(as, nrow = rows, byrow = TRUE)
 #ys <- c(rep("YES", rows / 2), rep("NO", rows / 2))
@@ -52,17 +55,8 @@ cv.err <- cv.glm(newData, fit)
 
 # Calculate some bad data that has no prediction power.
 
-#smallestPsInXs <- head(order(columnsCorrectPercent), n = targetPs)
-
-#badXs <- matrix(data = rep(0, rows * targetPs), nrow = rows, ncol = targetPs)
-#for (i in (1 : targetPs)) {
-#  badXsColNum <- smallestPsInXs[i]
-#  badXsCol <- xs[,badXsColNum]
-#  badXs[,i] <- badXsCol
-#}
-
-
-newBadData <- data.frame(mybadys = ys, badXs[,1:targetPs])
+# Just pull out some random data.  It should have no prediction power.
+newBadData <- data.frame(mybadys = ys, xs[,1:targetPs])
 
 badfit <- glm(mybadys ~ ., data=newBadData, family=binomial)
 badprobs <- predict(badfit, type="response")
