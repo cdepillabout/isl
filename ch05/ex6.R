@@ -21,8 +21,7 @@ glm_coef <- coef(fit_everything)
 ######
 
 boot.fn = function (data, index) {
-  return(coef(glm(formula, data = data, subset = index, family = binomial)))
+  coef(glm(formula = formula, data = data[index,], family = binomial))
 }
 
-glm_coef_boot = boot(Default, boot.fn, 1000)
-
+glm_coef_boot = boot(Default, boot.fn, 100)
