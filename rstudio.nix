@@ -32,6 +32,7 @@ let
     htmltools
     jsonlite
     knitr
+    leaps
     markdown
     reshape2
     rmarkdown
