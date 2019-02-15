@@ -58,6 +58,7 @@ set.seed(1)
 train = sample(c(TRUE, FALSE), nrow(Hitters), rep = TRUE)
 test = !train
 
+# Number of columns in Hitters minus the Salary column.
 hitters_cols = ncol(Hitters) - 1
 
 # find the best subset model using only the training data
